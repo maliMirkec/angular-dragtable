@@ -1,2 +1,2 @@
 # angular-dragtable
-Directive that allows reorder of table columns
+Directive that allows reorder of table columns.
