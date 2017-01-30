@@ -13,7 +13,6 @@ angular.module('Dragtable', [])
         element.attr('style', 'cursor: e-resize;');
       }
 
-
       // max number of dragging rows
       var limit = attrs.limit || 50;
 
@@ -34,6 +33,13 @@ angular.module('Dragtable', [])
 
       // ghost table data template
       var ghostHtml = '<div class="{elemClass}" style="height: {height}px; width: {width}px;">{text}</div>';
+
+      var mouseX, mouseY;
+
+      $(document).on("dragover", function(event) {
+        mouseX = event.originalEvent.clientX;
+        mouseY = event.originalEvent.clientY;
+      });
 
       // simple template function
       var t = function (s, d) {
@@ -129,6 +135,11 @@ angular.module('Dragtable', [])
 
       // listen when drag event starts
       element.bind('dragstart', function(e) {
+        // firefox fix
+        if(typeof e.originalEvent.dataTransfer.mozSourceNode !== 'undefined') {
+          e.originalEvent.dataTransfer.setData('application/node type', this);
+        }
+
         // if handle is set, check if handle is used and prevent dragging if not
         if(attrs.handle && (!$($currentElement).hasClass(attrs.handle) && !$($currentElement).closest(attrs.handle).length)) {
           return false;
@@ -153,7 +164,7 @@ angular.module('Dragtable', [])
         toObject = setTimeout(function() {
           // if $ghostWrapper exists, update left offset position
           if($ghostWrapper) {
-            $ghostWrapper.css('left', e.originalEvent.clientX - offsetDiff);
+            $ghostWrapper.css('left', mouseX - offsetDiff);
           }
         }, 5);
       });
@@ -204,7 +215,7 @@ angular.module('Dragtable', [])
           // append ghost data elements after current table data elements
           for (var i = 0; i < tdLimit; i++) {
             if(typeof $ghostElements[i] !== 'undefined') {
-              $currentElements[i].after($ghostElements[i]);
+              $($currentElements[i]).after($ghostElements[i]);
             } else {
               break;
             }
@@ -217,7 +228,7 @@ angular.module('Dragtable', [])
           for (var j = 0; j < tdLimit; j++) {
             // append ghost data elements before current table data elements
             if(typeof $ghostElements[j] !== 'undefined') {
-              $currentElements[j].before($ghostElements[j]);
+              $($currentElements[j]).before($ghostElements[j]);
             } else {
               break;
             }
