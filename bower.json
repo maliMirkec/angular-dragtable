@@ -1,6 +1,6 @@
 {
   "name": "angular-dragtable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/maliMirkec/angular-dragtable",
   "authors": [
     "Silvestar Bistrović <malimirkeccita@gmail.com>"
@@ -24,5 +24,8 @@
   ],
   "dependencies": {
     "angular": "^1.6.1"
+  },
+  "devDependencies": {
+    "bootstrap": "v4.0.0-alpha.6"
   }
 }

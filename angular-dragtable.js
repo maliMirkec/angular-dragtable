@@ -1,34 +1,31 @@
 angular.module('Dragtable', [])
 // listen to drag events
-.directive('draggable', [function () {
+.directive('dragMe', [function () {
   return {
     link: function(scope, element, attrs) {
       // set element as draggable
       element.attr('draggable', true).attr('style', 'cursor: e-resize;');
 
       // max number of dragging rows
-      var limit = 50;
+      var limit = attrs.limit || 50;
 
-      //
+      // current element offset position
       var offsetDiff = 0;
 
-      // timeout
-      var to = false;
+      // timeout object
+      var toObject = false;
 
       // current clicked element
       var $currentElement = false;
 
       // ghost element
-      var $ghostElement = false;
-
-      // original elements
-      var $originalElements = false;
+      var $ghostWrapper = false;
 
       // ghost wrapper template
       var ghostWrapperHtml = '<div class="ghost" style="position: fixed;">{ghostHtml}</div>';
 
       // ghost table data template
-      var ghostHtml = '<div class="{elemClass}" style="height: {height}px; width: {width}px;"><h5 class="{elemTextClass}">{text}</h5></div>';
+      var ghostHtml = '<div class="{elemClass}" style="height: {height}px; width: {width}px;">{text}</div>';
 
       // simple template function
       var t = function (s, d) {
@@ -42,99 +39,128 @@ angular.module('Dragtable', [])
         offsetDiff = e.originalEvent.clientX - element.offset().left;
       };
 
+      // add ghost elements
+      var addGhostElements = function(e) {
+        // if exists, remove previous $ghostWrapper
+        if($ghostWrapper) {
+          $ghostWrapper.remove();
+        }
+
+        // calculate current element offset
+        setOffsetDiff(e);
+
+        // add $ghostWrapper element
+        addGhostWrapperElements(addGhostTdElements());
+      };
+
+      // replicate every table data element
       var addGhostTdElements = function() {
-        var tds = '';
+        // html string
+        var ghostTdHtml = '';
+
+        // get current element index
         var nth = element.index() + 1;
 
-        $originalElements = element.closest('table').find('tr').find('td:nth-child(' + nth + '):visible');
+        // find matching element in table
+        var $tdElements = element.closest('table').find('tr td:nth-child(' + nth + '):visible');
 
-        $originalElements.addClass('ghost-data');
+        // add class on current td elements
+        $tdElements.addClass('ghost__data');
 
-        var tdLimit = $originalElements.length;
+        // check table row count
+        var tdLimit = $tdElements.length;
 
+        // check if table row count is bigger than limit and reset if it is
         if(tdLimit > limit) {
           tdLimit = limit;
         }
 
+        // for every row, generate td html and concat it
         for (var i = 0; i < tdLimit; i++) {
-          tds += t(ghostHtml, {
+          var $currentTdElement = $($tdElements[i]);
+          ghostTdHtml += t(ghostHtml, {
             elemClass: 'ghost__td',
-            elemTextClass: 'ghost__td-text',
-            height: $originalElements[i].clientHeight,
-            width: $originalElements[i].clientWidth,
-            text: $originalElements[i].innerHTML
+            height: $currentTdElement.outerHeight(),
+            width: $currentTdElement.outerWidth(),
+            text: $currentTdElement.html()
           });
         }
 
-        return tds;
+        // return generated ghostTdHtml
+        return ghostTdHtml;
       };
 
-      var addGhostElement = function(ghostHtml) {
+      // add final wrapper element with replicated table data elements
+      var addGhostWrapperElements = function(ghostHtml) {
+        // append ghost wrapper before table
         element.closest('table').before(t(ghostWrapperHtml, {
           ghostHtml: ghostHtml
         }));
 
-        $ghostElement = $('.ghost');
+        // find appended element
+        $ghostWrapper = $('.ghost');
 
+        // get current element offset
         var offset = element.offset();
 
-        $ghostElement.css('top', offset.top - $(window).scrollTop() + element.outerHeight());
-        $ghostElement.css('left', offset.left);
+        // add top and left offsets to appended element
+        $ghostWrapper.css('top', offset.top - $(window).scrollTop() + element.outerHeight());
+        $ghostWrapper.css('left', offset.left);
       };
 
-      var addGhostElements = function(e) {
-        element.addClass('dragging');
-
-        if($ghostElement) {
-          $ghostElement.remove();
-        }
-
-        setOffsetDiff(e);
-
-        var ghostTds = addGhostTdElements();
-
-        addGhostElement(ghostTds);
-      };
-
+      // find and remove unnecessary ghost classes and attributes
       var clearGhostElements = function() {
-        angular.element('.ghost-placeholder').removeClass('ghost-placeholder').removeAttr('width');
-        angular.element('.ghost-data').removeClass('ghost-data');
+        angular.element('.ghost__placeholder').removeClass('ghost__placeholder').removeAttr('width');
+        angular.element('.ghost__data').removeClass('ghost__data');
       };
 
+      // make sure current target is element clicked
       element.bind('mousedown', function(e) {
         $currentElement = e.target;
       });
 
+      // listen when drag event starts
       element.bind('dragstart', function(e) {
-        // if handle is set, check if handle is used and prevent dragging
-        if(attrs.handle && (!$($currentElement).hasClass(attrs.handle) && !$($currentElement).closest('.' + attrs.handle).length)) {
+        // if handle is set, check if handle is used and prevent dragging if not
+        if(attrs.handle && (!$($currentElement).hasClass(attrs.handle) && !$($currentElement).closest(attrs.handle).length)) {
           return false;
         }
 
+        // clear previous ghost elements
         clearGhostElements();
 
-        element.addClass('ghost-placeholder').attr('width', element.outerWidth());
+        // add class for styling and lock element width
+        element.addClass('ghost__placeholder').attr('width', element.outerWidth());
 
+        // add ghost elements
         addGhostElements(e);
       });
 
+      // listen when drag event is in an action
       element.bind('drag', function(e) {
-        clearTimeout(to);
+        // clear timeout object
+        clearTimeout(toObject);
 
-        to = setTimeout(function() {
-          if($ghostElement) {
-            $ghostElement.css('left', e.originalEvent.clientX - offsetDiff);
+        // create timeout object
+        toObject = setTimeout(function() {
+          // if $ghostWrapper exists, update left offset position
+          if($ghostWrapper) {
+            $ghostWrapper.css('left', e.originalEvent.clientX - offsetDiff);
           }
-        }, 2);
+        }, 5);
       });
 
+      // listen when drag event finishes
       element.bind('dragstop dragend', function(e) {
-        if($ghostElement) {
-          $ghostElement.remove();
+        // if $ghostWrapper exists, remove it
+        if($ghostWrapper) {
+          $ghostWrapper.remove();
         }
 
+        // clear any ghost element
         clearGhostElements();
 
+        // reset $currentElement
         $currentElement = false;
       });
     }
@@ -142,27 +168,32 @@ angular.module('Dragtable', [])
 }])
 
 // listen to drop events
-.directive('droppable', [function () {
+.directive('dropMe', [function () {
   return {
     link: function(scope, element, attrs) {
-      var to = false;
-      var limit = 50;
+      // timeout object
+      var toObject = false;
 
-      var ghostTable = function(direction, index, output) {
-        var $currentPlaceholder = angular.element('th:nth-child(' + (index) + ')').last();
-        var $ghostPlaceholder = angular.element('.ghost-placeholder').last();
+      // add ghost table column elements
+      var ghostTable = function(direction, index) {
+        // find last ghost placeholder
+        var $ghostPlaceholder = angular.element('.ghost__placeholder').last();
+
+        // find current table data elements
         var $currentElements = angular.element('tbody td:nth-child(' + (index) + ')');
-        var $ghostElements = angular.element('.ghost-data');
 
+        // find ghost data elements
+        var $ghostElements = angular.element('.ghost__data');
+
+        // get current table data elements count
         var tdLimit = $currentElements.length;
 
-        if(tdLimit > limit) {
-          tdLimit = limit;
-        }
-
+        // check if direction is right
         if(direction === 'right') {
-          $currentPlaceholder.after($ghostPlaceholder);
+          // append ghost placeholder after the current element
+          element.after($ghostPlaceholder);
 
+          // append ghost data elements after current table data elements
           for (var i = 0; i < tdLimit; i++) {
             if(typeof $ghostElements[i] !== 'undefined') {
               $currentElements[i].after($ghostElements[i]);
@@ -170,10 +201,13 @@ angular.module('Dragtable', [])
               break;
             }
           }
+          // check if direction is left
         } else if(direction === 'left') {
-          $currentPlaceholder.before($ghostPlaceholder);
+          // append ghost placeholder before the current element
+          element.before($ghostPlaceholder);
 
           for (var j = 0; j < tdLimit; j++) {
+            // append ghost data elements before current table data elements
             if(typeof $ghostElements[j] !== 'undefined') {
               $currentElements[j].before($ghostElements[j]);
             } else {
@@ -183,16 +217,22 @@ angular.module('Dragtable', [])
         }
       };
 
+      // listen when dragging element is over current element
       element.bind('dragover', function(e) {
+        // prevent default action
         e.preventDefault();
 
-        clearTimeout(to);
+        // clear timeout object
+        clearTimeout(toObject);
 
-        to = setTimeout(function() {
+        // create timeout object
+        toObject = setTimeout(function() {
+          // calculate direction of dragging element
           var direction = e.originalEvent.x > (element.offset().left + element.width() / 2) ? 'right' : 'left';
 
+          // append ghost elements into the table
           ghostTable(direction, element.index() + 1);
-        }, 2);
+        }, 5);
       });
     }
   };
