@@ -45,7 +45,7 @@ To allow column reorder, add directives `drag-me` and `drop-me` on `th` elements
 
 ## Options
 
-#### handle=".handle"
+#### handle
 
 To prevent drag event on whole `th` element, provide `data-handle` attribute with handle selector, like this:
 
