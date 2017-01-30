@@ -44,9 +44,9 @@
             <thead class="thead-inverse">
                 <tr>
                     <th>ID</th>
-                    <th draggable droppable>Name</th>
-                    <th draggable droppable >Description</th>
-                    <th draggable droppable >Age</th>
+                    <th drag-me drop-me>Name</th>
+                    <th drag-me drop-me >Description</th>
+                    <th drag-me drop-me >Age</th>
                 </tr>
             </thead>
             <tbody>

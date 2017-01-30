@@ -1,6 +1,6 @@
 angular.module('Dragtable', [])
 // listen to drag events
-.directive('draggable', [function () {
+.directive('dragMe', [function () {
   return {
     link: function(scope, element, attrs) {
       // set element as draggable
@@ -142,7 +142,7 @@ angular.module('Dragtable', [])
 }])
 
 // listen to drop events
-.directive('droppable', [function () {
+.directive('dropMe', [function () {
   return {
     link: function(scope, element, attrs) {
       var to = false;

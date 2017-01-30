@@ -24,5 +24,8 @@
   ],
   "dependencies": {
     "angular": "^1.6.1"
+  },
+  "devDependencies": {
+    "bootstrap": "v4.0.0-alpha.6"
   }
 }
