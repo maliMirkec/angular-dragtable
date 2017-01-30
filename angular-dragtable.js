@@ -4,7 +4,15 @@ angular.module('Dragtable', [])
   return {
     link: function(scope, element, attrs) {
       // set element as draggable
-      element.attr('draggable', true).attr('style', 'cursor: e-resize;');
+      element.attr('draggable', true);
+
+      // add custom cursor
+      if(attrs.handle && element.find(attrs.handle)) {
+        element.find(attrs.handle).attr('style', 'cursor: e-resize;');
+      } else {
+        element.attr('style', 'cursor: e-resize;');
+      }
+
 
       // max number of dragging rows
       var limit = attrs.limit || 50;
