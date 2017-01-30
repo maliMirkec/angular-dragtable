@@ -44,9 +44,9 @@
             <thead class="thead-inverse">
                 <tr>
                     <th>ID</th>
-                    <th drag-me drop-me>Name</th>
-                    <th drag-me drop-me >Description</th>
-                    <th drag-me drop-me >Age</th>
+                    <th drag-me drop-me data-limit="5" data-delay="1000" data-handle=".handle">Name <span class="badge badge-info handle">Handle</span></th>
+                    <th drag-me drop-me data-limit="5" data-delay="1000" data-handle=".handle">Description <span class="badge badge-info handle">Handle</span></th>
+                    <th drag-me drop-me data-limit="5" data-delay="1000" data-handle=".handle">Age <span class="badge badge-info handle">Handle</span></th>
                 </tr>
             </thead>
             <tbody>
