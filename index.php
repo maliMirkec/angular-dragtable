@@ -55,7 +55,7 @@
       <div class="col-sm-12">
         <h2 class="mb-3">Options</h2>
         <h4 class="mb-3">handle</h4>
-        <p>To prevent drag event on whole `th` element, provide `data-handle` attribute with handle selector, like this:</p>
+        <p>To prevent drag event on whole <code>th</code> element, provide <code>data-handle</code> attribute with handle selector, like this:</p>
 <pre><code>&lt;th drag-me drop-me data-handle=".handle"&gt;Name &lt;span class="handle"&gt;Handle&lt;/span&gt;&lt;/th&gt;</code></pre>
         <p>Now column could be dragged only using provided handle element.</p>
         <p><i>Note that handle element should be inside of <code>th</code> element.</i></p>
