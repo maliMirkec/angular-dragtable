@@ -136,7 +136,7 @@ angular.module('Dragtable', [])
       // listen when drag event starts
       element.bind('dragstart', function(e) {
         // firefox fix
-        if(typeof e.originalEvent.dataTransfer.mozSourceNode !== 'undefined') {
+        if(typeof e.originalEvent.dataTransfer !== 'undefined' && typeof e.originalEvent.dataTransfer.mozSourceNode !== 'undefined') {
           e.originalEvent.dataTransfer.setData('application/node type', this);
         }
 
