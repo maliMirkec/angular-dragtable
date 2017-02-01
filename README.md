@@ -6,6 +6,10 @@ Directive that allows reorder of table columns.
 
 This directive needs jQuery to work.
 
+## Installation
+
+Download files or use bower: `bower install angular-dragtable`.
+
 ## Usage
 
 First include Angular Dragtable in your project:
