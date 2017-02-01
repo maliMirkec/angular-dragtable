@@ -9,7 +9,7 @@ gulp.task('js-include', function () {
   .pipe(gulp.dest('./demo/dist/'));
 });
 
-gulp.task('js-include-live', function () {
+gulp.task('js-include-live', ['js-include'], function () {
   gulp.watch('./**/*.js', ['js-include']);
 });
 
