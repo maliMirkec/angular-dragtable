@@ -170,7 +170,7 @@ angular.module('Dragtable', [])
       });
 
       // listen when drag event finishes
-      element.bind('dragstop dragend', function(e) {
+      element.bind('dragend', function(e) {
         // if $ghostWrapper exists, remove it
         if($ghostWrapper) {
           $ghostWrapper.remove();
@@ -193,8 +193,24 @@ angular.module('Dragtable', [])
       // timeout object
       var toObject = false;
 
+      // max number of dragging rows
+      var limit = attrs.limit || 50;
+
+      // last known direction
+      var lastDirection = false;
+
+      // last known index
+      var lastIndex = false;
+
       // add ghost table column elements
-      var ghostTable = function(direction, index) {
+      var ghostTable = function(direction, index, unlimited) {
+        // check if last know direction and current direction
+        // and last know index and current index are the same
+        // if so, prevent action
+        if(direction === lastDirection && index === lastDirection) {
+          return false;
+        }
+
         // find last ghost placeholder
         var $ghostPlaceholder = angular.element('.ghost__placeholder').last();
 
@@ -206,6 +222,12 @@ angular.module('Dragtable', [])
 
         // get current table data elements count
         var tdLimit = $currentElements.length;
+
+        // check if table row count is bigger than limit
+        // and if unlimited option is not true and reset if it is
+        if(tdLimit > limit && unlimited !== true) {
+          tdLimit = limit;
+        }
 
         // check if direction is right
         if(direction === 'right') {
@@ -234,6 +256,12 @@ angular.module('Dragtable', [])
             }
           }
         }
+
+        // cache current direction
+        lastDirection = direction;
+
+        // cache current index
+        lastIndex = index;
       };
 
       // listen when dragging element is over current element
@@ -251,7 +279,16 @@ angular.module('Dragtable', [])
 
           // append ghost elements into the table
           ghostTable(direction, element.index() + 1);
-        }, 5);
+        }, 50);
+      });
+
+      // listen when dragging element is dropped into current element
+      element.bind('drop', function(e) {
+        // calculate direction of dragging element
+        var direction = e.originalEvent.x > (element.offset().left + element.width() / 2) ? 'right' : 'left';
+
+        // append ghost elements into the table
+        ghostTable(direction, element.index() + 1, true);
       });
     }
   };
