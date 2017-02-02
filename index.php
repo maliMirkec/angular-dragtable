@@ -30,24 +30,24 @@
         }(this));</code></pre>
         <p>To allow column reorder, add directives <code>drag-me</code> and <code>drop-me</code> on <code>th</code> elements, like this:</p>
         <pre><code>&lt;table&gt;
-          &lt;thead&gt;
-          &lt;tr&gt;
-          &lt;th&gt;ID&lt;/th&gt;
-          &lt;th drag-me drop-me&gt;Name&lt;/th&gt;
-          &lt;th drag-me drop-me&gt;Description&lt;/th&gt;
-          &lt;th drag-me drop-me&gt;Age&lt;/th&gt;
-          &lt;/tr&gt;
-          &lt;/thead&gt;
-          &lt;tbody&gt;
-          &lt;tr&gt;
-          &lt;td&gt;1&lt;/td&gt;
-          &lt;td&gt;Item 1&lt;/td&gt;
-          &lt;td&gt;Description 1&lt;/td&gt;
-          &lt;td&gt;1&lt;/td&gt;
-          &lt;/tr&gt;
-          ...
-          &lt;/tbody&gt;
-          &lt;/table&gt;</code></pre>
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;ID&lt;/th&gt;
+      &lt;th drag-me drop-me&gt;Name&lt;/th&gt;
+      &lt;th drag-me drop-me&gt;Description&lt;/th&gt;
+      &lt;th drag-me drop-me&gt;Age&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;Item 1&lt;/td&gt;
+      &lt;td&gt;Description 1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    ...
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
         </div>
       </div>
       <hr class="my-2">
@@ -77,13 +77,13 @@
             <thead class="thead-inverse">
               <tr>
                 <th>ID</th>
-                <th drag-me drop-me data-limit="5" data-handle=".handle">Name <span class="badge badge-info handle">Handle</span></th>
-                <th drag-me drop-me data-limit="5" data-handle=".handle">Description <span class="badge badge-info handle">Handle</span></th>
-                <th drag-me drop-me data-limit="5">Age <span class="badge badge-info handle">Handle</span></th>
+                <th drag-me drop-me data-limit="50" data-handle=".handle">Name <span class="badge badge-info handle">Handle</span></th>
+                <th drag-me drop-me data-limit="50" data-handle=".handle">Description <span class="badge badge-info handle">Handle</span></th>
+                <th drag-me drop-me data-limit="50">Age <span class="badge badge-info handle">Handle</span></th>
               </tr>
             </thead>
             <tbody>
-              <?php for ($i=1; $i <= 10000; $i++) { ?>
+              <?php for ($i=1; $i <= 1000; $i++) { ?>
                 <tr>
                   <td><?php echo $i; ?></td>
                   <td>Item <?php echo $i; ?></td>

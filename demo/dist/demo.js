@@ -193,9 +193,6 @@ angular.module('Dragtable', [])
       // timeout object
       var toObject = false;
 
-      // max number of dragging rows
-      var limit = attrs.limit || 50;
-
       // last known direction
       var lastDirection = false;
 
@@ -203,7 +200,7 @@ angular.module('Dragtable', [])
       var lastIndex = false;
 
       // add ghost table column elements
-      var ghostTable = function(direction, index, unlimited) {
+      var ghostTable = function(direction, index) {
         // check if last know direction and current direction
         // and last know index and current index are the same
         // if so, prevent action
@@ -222,12 +219,6 @@ angular.module('Dragtable', [])
 
         // get current table data elements count
         var tdLimit = $currentElements.length;
-
-        // check if table row count is bigger than limit
-        // and if unlimited option is not true and reset if it is
-        if(tdLimit > limit && unlimited !== true) {
-          tdLimit = limit;
-        }
 
         // check if direction is right
         if(direction === 'right') {
