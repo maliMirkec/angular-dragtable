@@ -226,7 +226,7 @@ angular.module('Dragtable', [])
           element.after($ghostPlaceholder);
 
           // append ghost data elements after current table data elements
-          for (var i = 0; i < tdLimit; i++) {
+          for (var i = 1; i < tdLimit; i++) {
             if(typeof $ghostElements[i] !== 'undefined') {
               $($currentElements[i]).after($ghostElements[i]);
             } else {
@@ -238,7 +238,7 @@ angular.module('Dragtable', [])
           // append ghost placeholder before the current element
           element.before($ghostPlaceholder);
 
-          for (var j = 0; j < tdLimit; j++) {
+          for (var j = 1; j < tdLimit; j++) {
             // append ghost data elements before current table data elements
             if(typeof $ghostElements[j] !== 'undefined') {
               $($currentElements[j]).before($ghostElements[j]);
