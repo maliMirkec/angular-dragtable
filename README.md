@@ -69,8 +69,5 @@ Add number of rows that should be duplicated, like this:
 <th drag-me drop-me data-limit="50">Name</th>
 ```
 
-## Demo
-https://frontend-developer.xyz/angular-dragtable/
-
 ## Guide
-https://silvestarbistrovic.from.hr/en/articles/angular-dragtable
+https://silvestar.codes/articles/angular-dragtable
